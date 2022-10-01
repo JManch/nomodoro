@@ -1,9 +1,8 @@
 -- Check if already loaded
 if vim.g.loaded_nomodoro then
-  return
+    return
 end
 vim.g.loaded_nomodoro = true
-
 
 local command = vim.api.nvim_create_user_command
 
@@ -24,9 +23,10 @@ local DEFAULT_OPTIONS = {
         on_break_complete = "TIME IS UP!",
         on_work_complete = "TIME IS UP!",
         status_icon = "羽",
+        timer_format = "!%M:%S", -- To include hours: '!%H:%M:%S'
     },
     on_work_complete = function() end,
-    on_break_complete = function() end
+    on_break_complete = function() end,
 }
 
 -- Local functions
@@ -55,7 +55,7 @@ end
 local nomodoro = {}
 
 function nomodoro.setup(options)
-    local new_config = vim.tbl_deep_extend('force', DEFAULT_OPTIONS, options)
+    local new_config = vim.tbl_deep_extend("force", DEFAULT_OPTIONS, options)
     vim.g.nomodoro = new_config
 end
 
@@ -75,7 +75,6 @@ function nomodoro.status()
                     vim.g.nomodoro.on_break_complete()
                     already_notified_end = true
                 end
-
             end
         else
             status_string = vim.g.nomodoro.texts.status_icon .. time_remaining(total_minutes, start_time)
@@ -90,25 +89,24 @@ end
 
 -- Expose commands
 
-command("NomoWork", function ()
-	start(vim.g.nomodoro.work_time)
+command("NomoWork", function()
+    start(vim.g.nomodoro.work_time)
 end, {})
 
-command("NomoBreak", function ()
+command("NomoBreak", function()
     start(vim.g.nomodoro.break_time)
 end, {})
 
-command("NomoStop", function ()
+command("NomoStop", function()
     nomodoro.stop()
 end, {})
 
-command("NomoStatus", function ()
+command("NomoStatus", function()
     print(nomodoro.status())
 end, {})
 
-command("NomoTimer", function (opts)
+command("NomoTimer", function(opts)
     start(opts.args)
-end, {nargs = 1})
-
+end, { nargs = 1 })
 
 return nomodoro
