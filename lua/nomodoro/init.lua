@@ -4,7 +4,6 @@ if vim.g.loaded_nomodoro then
 end
 vim.g.loaded_nomodoro = true
 
-local menu = require('nomodoro.menu')
 
 local command = vim.api.nvim_create_user_command
 
@@ -21,7 +20,6 @@ local already_notified_end = false
 local DEFAULT_OPTIONS = {
     work_time = 25,
     break_time = 5,
-    menu_available = true,
     texts = {
         on_break_complete = "TIME IS UP!",
         on_work_complete = "TIME IS UP!",
@@ -59,7 +57,6 @@ local nomodoro = {}
 function nomodoro.setup(options)
     local new_config = vim.tbl_deep_extend('force', DEFAULT_OPTIONS, options)
     vim.g.nomodoro = new_config
-    menu.has_dependencies = new_config.menu_available
 end
 
 function nomodoro.status()
@@ -91,10 +88,6 @@ function nomodoro.stop()
     state = DONE
 end
 
-function nomodoro.show_menu()
-    menu.show(nomodoro)
-end
-
 -- Expose commands
 
 command("NomoWork", function ()
@@ -117,10 +110,5 @@ command("NomoTimer", function (opts)
     start(opts.args)
 end, {nargs = 1})
 
-if menu.has_dependencies then
-    command("NomoMenu", function()
-        nomodoro.show_menu()
-    end, {})
-end
 
 return nomodoro
